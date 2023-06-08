@@ -1,8 +1,11 @@
 import * as dotenv from "dotenv";
+import { ConnectOptions, ConnectionOptions} from "typeorm";
+import { SnakeNamingStrategy } from "typeorm-naming-strategies";
+
 
 export abstract class ConfigServer {
     constructor(){
-        const nodeNameEnv = this.creathePathEnv(this.nodeEnv);
+        const nodeNameEnv = this.createPathEnv(this.nodeEnv);
         dotenv.config({
             path: nodeNameEnv,
         })
@@ -21,7 +24,7 @@ export abstract class ConfigServer {
 
     }
 
-    public creathePathEnv(path: string): string {
+    public createPathEnv(path: string): string {
         const arrEnv: Array<string> = ['env']
         if(path.length > 0){
             const stringToArray = path.split('.');
@@ -29,5 +32,21 @@ export abstract class ConfigServer {
         }
         return '.' + arrEnv.join('.');
     }
+
+    public get typeORMConfig(): ConnectionOptions {
+        return {
+          type: 'mysql',
+          host: this.getEnviroment('DB_HOST'),
+          port: this.getNumberEnv('DB_PORT'),
+          username: this.getEnviroment('DB_USER'),
+          password: this.getEnviroment('DB_PASSWORD'),
+          database: this.getEnviroment('DB_DATABASE'),
+          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+          migrations: [__dirname + '/../../migrations/*{.ts,.js}'],
+          synchronize: true,
+          logging: false,
+          namingStrategy: new SnakeNamingStrategy(),
+        };
+      }
 }
 
