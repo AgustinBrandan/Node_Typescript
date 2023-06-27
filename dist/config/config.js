@@ -54,7 +54,7 @@ class ConfigServer {
         return ((_a = this.getEnvironment("NODE_ENV")) === null || _a === void 0 ? void 0 : _a.trim()) || "";
     }
     createPathEnv(path) {
-        const arrEnv = ["env"]; //['hola', 'mundo'] => 'hola.mundo'
+        const arrEnv = ["env"];
         if (path.length > 0) {
             const stringToArray = path.split(".");
             arrEnv.unshift(...stringToArray);
